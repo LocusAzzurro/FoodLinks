@@ -1,0 +1,18 @@
+{
+  "type": "foodlinks:effector",
+  "category": "misc",
+  "items": [
+    {
+      "tag": "foodlinks:night_vision_effectors"
+    },
+    {
+      "tag": "foodlinks:night_vision_effectors"
+    },
+    {
+      "tag": "foodlinks:night_vision_effectors"
+    }
+  ],
+  "result": {
+    "item": "foodlinks:effector_night_vision"
+  }
+}

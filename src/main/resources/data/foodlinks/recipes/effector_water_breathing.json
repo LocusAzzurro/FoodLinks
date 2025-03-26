@@ -1,0 +1,18 @@
+{
+  "type": "foodlinks:effector",
+  "category": "misc",
+  "items": [
+    {
+      "tag": "foodlinks:water_breathing_effectors"
+    },
+    {
+      "tag": "foodlinks:water_breathing_effectors"
+    },
+    {
+      "tag": "foodlinks:water_breathing_effectors"
+    }
+  ],
+  "result": {
+    "item": "foodlinks:effector_water_breathing"
+  }
+}

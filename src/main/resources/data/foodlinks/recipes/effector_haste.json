@@ -1,0 +1,18 @@
+{
+  "type": "foodlinks:effector",
+  "category": "misc",
+  "items": [
+    {
+      "tag": "foodlinks:haste_effectors"
+    },
+    {
+      "tag": "foodlinks:haste_effectors"
+    },
+    {
+      "tag": "foodlinks:haste_effectors"
+    }
+  ],
+  "result": {
+    "item": "foodlinks:effector_haste"
+  }
+}

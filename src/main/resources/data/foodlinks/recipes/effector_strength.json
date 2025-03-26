@@ -1,0 +1,18 @@
+{
+  "type": "foodlinks:effector",
+  "category": "misc",
+  "items": [
+    {
+      "tag": "foodlinks:strength_effectors"
+    },
+    {
+      "tag": "foodlinks:strength_effectors"
+    },
+    {
+      "tag": "foodlinks:strength_effectors"
+    }
+  ],
+  "result": {
+    "item": "foodlinks:effector_strength"
+  }
+}
