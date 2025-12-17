@@ -4,10 +4,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.brewing.PotionBrewEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -70,6 +75,18 @@ public class ModEventHandler {
 
             event.setAmount(healAmount);
         }
+    }
+
+    @SubscribeEvent
+    public static void disableBrewing(PotionBrewEvent.Pre event){
+        for (int i = 0; i < 3; i ++){
+            ItemStack item = event.getItem(i);
+            if (item.is(Items.POTION) || item.is(Items.SPLASH_POTION) || item.is(Items.LINGERING_POTION)){
+                PotionUtils.setPotion(item, Potions.MUNDANE);
+                event.setCanceled(true);
+            }
+        }
+
     }
 
 

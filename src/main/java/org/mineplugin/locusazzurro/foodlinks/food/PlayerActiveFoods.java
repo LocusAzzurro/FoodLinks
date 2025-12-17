@@ -33,7 +33,7 @@ public class PlayerActiveFoods {
     private List<ActiveFoodEntry> foods;
     private Set<Item> activeEffects;
     public static final int MIN_COUNT = 3;
-    public static final int MAX_COUNT = 9;
+    public static final int MAX_COUNT = 5;
 
     public PlayerActiveFoods(){
         slotCount = MIN_COUNT;
