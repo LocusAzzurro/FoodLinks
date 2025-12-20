@@ -5,23 +5,24 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.mineplugin.locusazzurro.foodlinks.capability.PlayerActiveFoodsProvider;
 import org.mineplugin.locusazzurro.foodlinks.item.EffectorItem;
+import org.mineplugin.locusazzurro.foodlinks.network.ActiveFoodsS2CPacket;
+import org.mineplugin.locusazzurro.foodlinks.network.ModPacketHandler;
 import org.mineplugin.locusazzurro.foodlinks.recipe.EffectorRecipe;
-import org.mineplugin.locusazzurro.foodlinks.registry.ItemRegistry;
 import org.mineplugin.locusazzurro.foodlinks.registry.RecipeRegistry;
 
 import java.util.*;
@@ -32,13 +33,15 @@ public class PlayerActiveFoods {
     private int slotCount;
     private List<ActiveFoodEntry> foods;
     private Set<Item> activeEffects;
+    private long lastEffectTick = 0;
     public static final int MIN_COUNT = 3;
     public static final int MAX_COUNT = 5;
+    public static final int MAX_EFFECT_COUNT = 9;
 
     public PlayerActiveFoods(){
         slotCount = MIN_COUNT;
         foods = new ArrayList<>(MAX_COUNT);
-        activeEffects = new HashSet<>(MAX_COUNT);
+        activeEffects = new HashSet<>(MAX_EFFECT_COUNT);
     }
 
     public int getSlotCount(){
@@ -59,7 +62,7 @@ public class PlayerActiveFoods {
         int chargeValue = addItem.getFoodProperties(item, player).getNutrition() * 3;
         for (ActiveFoodEntry entry : this.foods){
             if (item.is(entry.getFoodItem())){
-                entry.addCharges(chargeValue);
+                entry.setCharges(Math.min(entry.getCharges() + chargeValue, 2 * chargeValue));
                 return;
             }
         }
@@ -102,6 +105,7 @@ public class PlayerActiveFoods {
                     itr.remove();
                 }
             }
+            ModPacketHandler.sendToPlayer(new ActiveFoodsS2CPacket(foods), (ServerPlayer) player);
         }
     }
 
@@ -127,6 +131,7 @@ public class PlayerActiveFoods {
             this.activeEffects.forEach(effect -> {
                 if (effect instanceof EffectorItem effectorItem) effectorItem.applyEffect(player);
             });
+            this.lastEffectTick = level.getGameTime();
         }
     }
 
@@ -139,7 +144,9 @@ public class PlayerActiveFoods {
                     .ifPresent(cap -> {
                         cap.addFoodEntry(item, player);
                         cap.tickEffects(player, player.level());
+                        ModPacketHandler.sendToPlayer(new ActiveFoodsS2CPacket(cap.foods), (ServerPlayer) player);
                     });
+
         }
     }
 
@@ -150,16 +157,24 @@ public class PlayerActiveFoods {
         Level level = event.player.level();
         FoodData foodData = player.getFoodData();
         boolean foodChanged = foodData.getLastFoodLevel() > foodData.getFoodLevel();
-        boolean effectTick = level.getGameTime() % 200 == 0;
+        player.getCapability(PlayerActiveFoodsProvider.PLAYER_ACTIVE_FOODS).ifPresent(cap -> {
+            if (cap.hasFoodInList() && foodChanged){
+                cap.tickCharges(player, level);
+            }
+            if (level.getGameTime() - cap.lastEffectTick >= 200)
+                cap.tickEffects(player, level);
+        });
+    }
 
-        if (foodChanged || effectTick){
-            player.getCapability(PlayerActiveFoodsProvider.PLAYER_ACTIVE_FOODS).ifPresent(cap -> {
-                if (cap.hasFoodInList()){
-                    cap.tickCharges(player, level);
-                    if (effectTick)
-                        cap.tickEffects(player, level);
-                }
+    @SubscribeEvent
+    public static void onPlayerJoinWorld(EntityJoinLevelEvent event){
+        if (event.getLevel().isClientSide) return;
+        if (event.getEntity() instanceof ServerPlayer player){
+            player.getCapability(PlayerActiveFoodsProvider.PLAYER_ACTIVE_FOODS).ifPresent(cap ->{
+                ModPacketHandler.sendToPlayer(new ActiveFoodsS2CPacket(cap.foods), player);
+                cap.tickEffects(player, event.getLevel());
             });
+
         }
     }
 

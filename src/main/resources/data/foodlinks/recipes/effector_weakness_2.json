@@ -1,0 +1,18 @@
+{
+  "type": "foodlinks:effector",
+  "category": "misc",
+  "items": [
+    {
+      "tag": "foodlinks:weakness_effectors_2"
+    },
+    {
+      "tag": "foodlinks:weakness_effectors_2"
+    },
+    {
+      "tag": "foodlinks:weakness_effectors_2"
+    }
+  ],
+  "result": {
+    "item": "foodlinks:effector_weakness_2"
+  }
+}

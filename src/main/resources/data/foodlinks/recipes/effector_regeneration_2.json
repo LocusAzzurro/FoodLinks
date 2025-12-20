@@ -1,0 +1,18 @@
+{
+  "type": "foodlinks:effector",
+  "category": "misc",
+  "items": [
+    {
+      "tag": "foodlinks:regeneration_effectors_2"
+    },
+    {
+      "tag": "foodlinks:regeneration_effectors_2"
+    },
+    {
+      "tag": "foodlinks:regeneration_effectors_2"
+    }
+  ],
+  "result": {
+    "item": "foodlinks:effector_regeneration_2"
+  }
+}

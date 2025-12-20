@@ -1,0 +1,18 @@
+{
+  "type": "foodlinks:effector",
+  "category": "misc",
+  "items": [
+    {
+      "tag": "foodlinks:health_effectors_2"
+    },
+    {
+      "tag": "foodlinks:health_effectors_2"
+    },
+    {
+      "tag": "foodlinks:health_effectors_2"
+    }
+  ],
+  "result": {
+    "item": "foodlinks:effector_health_2"
+  }
+}

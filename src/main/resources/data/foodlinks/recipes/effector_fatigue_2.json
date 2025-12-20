@@ -1,0 +1,18 @@
+{
+  "type": "foodlinks:effector",
+  "category": "misc",
+  "items": [
+    {
+      "tag": "foodlinks:fatigue_effectors_2"
+    },
+    {
+      "tag": "foodlinks:fatigue_effectors_2"
+    },
+    {
+      "tag": "foodlinks:fatigue_effectors_2"
+    }
+  ],
+  "result": {
+    "item": "foodlinks:effector_fatigue_2"
+  }
+}

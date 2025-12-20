@@ -11,7 +11,6 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.brewing.PotionBrewEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -23,7 +22,7 @@ import org.mineplugin.locusazzurro.foodlinks.capability.PlayerActiveFoodsProvide
 
 
 @Mod.EventBusSubscriber(modid = FoodLinks.MODID)
-public class ModEventHandler {
+public class CommonEventHandler {
 
     public static final ResourceLocation ACTIVE_FOODS_RL = new ResourceLocation(FoodLinks.MODID, "active_foods");
 

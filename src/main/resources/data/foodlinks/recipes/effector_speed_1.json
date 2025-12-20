@@ -1,0 +1,15 @@
+{
+  "type": "foodlinks:effector",
+  "category": "misc",
+  "items": [
+    {
+      "tag": "foodlinks:speed_effectors"
+    },
+    {
+      "tag": "foodlinks:speed_effectors"
+    }
+  ],
+  "result": {
+    "item": "foodlinks:effector_speed_1"
+  }
+}

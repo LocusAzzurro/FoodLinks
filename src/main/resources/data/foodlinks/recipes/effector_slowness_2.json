@@ -1,0 +1,21 @@
+{
+  "type": "foodlinks:effector",
+  "category": "misc",
+  "items": [
+    {
+      "tag": "foodlinks:slowness_effectors"
+    },
+    {
+      "tag": "foodlinks:slowness_effectors"
+    },
+    {
+      "tag": "foodlinks:slowness_effectors"
+    },
+    {
+      "tag": "foodlinks:slowness_effectors"
+    }
+  ],
+  "result": {
+    "item": "foodlinks:effector_slowness_2"
+  }
+}

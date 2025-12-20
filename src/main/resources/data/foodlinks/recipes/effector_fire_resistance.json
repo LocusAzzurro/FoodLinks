@@ -1,0 +1,18 @@
+{
+  "type": "foodlinks:effector",
+  "category": "misc",
+  "items": [
+    {
+      "tag": "foodlinks:fire_resistance_effectors"
+    },
+    {
+      "tag": "foodlinks:fire_resistance_effectors"
+    },
+    {
+      "tag": "foodlinks:fire_resistance_effectors"
+    }
+  ],
+  "result": {
+    "item": "foodlinks:effector_fire_resistance"
+  }
+}

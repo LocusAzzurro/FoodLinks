@@ -37,9 +37,10 @@ public class EffectorRecipe implements Recipe<Container> {
 
     private static final Ingredient ING_ANY = Ingredient.of(ItemRegistry.WILDCARD_ITEM.get());
     private static final Predicate<ItemStack> ANY = i -> true;
-    private static final List<Ingredient> BLANK_CRITERIA_ING = List.of(ING_ANY, ING_ANY, ING_ANY, ING_ANY, ING_ANY, ING_ANY, ING_ANY, ING_ANY, ING_ANY);
-    private static final List<Predicate<ItemStack>> BLANK_CRITERIA = List.of(ANY, ANY, ANY, ANY, ANY, ANY, ANY, ANY, ANY);
-    private static final List<ItemStack> BLANK_ITEMS = List.of(ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY);
+    private static final List<Ingredient> BLANK_CRITERIA_ING = List.of(ING_ANY, ING_ANY, ING_ANY, ING_ANY, ING_ANY);
+    private static final List<Predicate<ItemStack>> BLANK_CRITERIA = List.of(ANY, ANY, ANY, ANY, ANY);
+    private static final List<ItemStack> BLANK_ITEMS = List.of(ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY);
+    private static final int MAX_SLOTS = PlayerActiveFoods.MAX_COUNT;
 
     public EffectorRecipe(ResourceLocation pId, String pGroup, ItemStack pResult, NonNullList<Ingredient> pIngredients) {
         this.id = pId;
@@ -62,7 +63,7 @@ public class EffectorRecipe implements Recipe<Container> {
             input.set(i, pContainer.getItem(i));
         }
 
-        for (int j = 0; j < 9; j++){
+        for (int j = 0; j < MAX_SLOTS; j++){
             checks.set(j, predicateFromIngredient(this.ingredients.get(j)));
         }
 

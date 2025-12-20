@@ -2,7 +2,6 @@ package org.mineplugin.locusazzurro.foodlinks.item;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 
@@ -10,8 +9,8 @@ import java.util.function.Consumer;
 
 public class EffectorItem extends Item {
 
-    private static int DEFAULT_DURATION = 10 * 20;
-    private Consumer<Player> effects;
+    private static final int DEFAULT_DURATION = 20 * 20; // 20 secs
+    private final Consumer<Player> effects;
 
     public EffectorItem(Consumer<Player> effects) {
         super(new Properties());
@@ -20,6 +19,10 @@ public class EffectorItem extends Item {
 
     public void applyEffect(Player player){
         effects.accept(player);
+    }
+
+    public static EffectorItem withEffect(MobEffect effect, int amplifier){
+        return new EffectorItem(player -> player.addEffect(new MobEffectInstance(effect, DEFAULT_DURATION, amplifier, true, true)));
     }
 
     public static EffectorItem withEffects(MobEffect... effects){

@@ -10,9 +10,12 @@
     },
     {
       "tag": "foodlinks:speed_effectors"
+    },
+    {
+      "tag": "foodlinks:speed_effectors"
     }
   ],
   "result": {
-    "item": "foodlinks:effector_speed"
+    "item": "foodlinks:effector_speed_2"
   }
 }
