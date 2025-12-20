@@ -1,8 +1,10 @@
 package org.mineplugin.locusazzurro.foodlinks.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
@@ -21,7 +23,7 @@ public class ActiveFoodsOverlay {
     private static final int SLOT_H = 16;
 
     public static final IGuiOverlay GUI_OVERLAY = (((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
-        Font font = Minecraft.getInstance().font;
+        if (Minecraft.getInstance().screen instanceof ChatScreen) return;
         List<ActiveFoodEntry> foods = ClientActiveFoodsData.getFoods();
         if (foods.isEmpty()) return;
 
@@ -29,15 +31,18 @@ public class ActiveFoodsOverlay {
         int x = 32;
         int y = screenHeight - 8;
 
-        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         for (int i = 0; i < foods.size(); i++){
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             ItemStack item = foods.get(i).getFoodItem().getDefaultInstance();
             int yOffset = y - (i + 1) * 18;
+            PoseStack pose = guiGraphics.pose();
 
-            guiGraphics.renderFakeItem(item, x, yOffset);
+            pose.pushPose();
+            pose.translate(0f,0f,-150f);
+            guiGraphics.renderItem(item, x, yOffset);
+            pose.popPose();
 
-            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             guiGraphics.blit(SLOT_EMPTY, x + 18, yOffset, 0, 0, SLOT_W, SLOT_H, SLOT_W, SLOT_H);
             guiGraphics.blit(SLOT_EMPTY, x + 18 + 7, yOffset, 0, 0, SLOT_W, SLOT_H, SLOT_W, SLOT_H);
             guiGraphics.blit(SLOT_EMPTY, x + 18 + 14, yOffset, 0, 0, SLOT_W, SLOT_H, SLOT_W, SLOT_H);

@@ -9,6 +9,8 @@ import org.mineplugin.locusazzurro.foodlinks.FoodLinks;
 @SuppressWarnings("unused")
 public class EffectorTags {
 
+    public static final TagKey<Item> EFFECTOR_SKIP = createTag("effector_skip");
+
     // AGI
     public static final TagKey<Item> SPEED_EFFECTORS = createTag("speed_effectors");
     public static final TagKey<Item> JUMP_EFFECTORS = createTag("jump_effectors");

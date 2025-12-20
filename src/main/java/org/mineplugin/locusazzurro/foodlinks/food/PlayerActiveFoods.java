@@ -96,6 +96,10 @@ public class PlayerActiveFoods {
         this.activeEffects.clear();
     }
 
+    public List<ActiveFoodEntry> getFoods(){
+        return foods;
+    }
+
     public void tickCharges(Player player, Level level) {
         if (!level.isClientSide()) {
             for (var itr = this.foods.iterator(); itr.hasNext(); ) {
@@ -139,6 +143,7 @@ public class PlayerActiveFoods {
     @SubscribeEvent
     public static void onConsumeFood(LivingEntityUseItemEvent.Finish event){
         ItemStack item = event.getItem();
+        if (item.is(EffectorTags.EFFECTOR_SKIP)) return;
         if (item.isEdible() && event.getEntity() instanceof Player player){
             player.getCapability(PlayerActiveFoodsProvider.PLAYER_ACTIVE_FOODS)
                     .ifPresent(cap -> {
