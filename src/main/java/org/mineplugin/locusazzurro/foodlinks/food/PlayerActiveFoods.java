@@ -12,6 +12,7 @@ import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -28,6 +29,7 @@ import org.mineplugin.locusazzurro.foodlinks.registry.RecipeRegistry;
 import java.util.*;
 
 @Mod.EventBusSubscriber
+@AutoRegisterCapability
 public class PlayerActiveFoods {
 
     private int slotCount;
@@ -149,7 +151,8 @@ public class PlayerActiveFoods {
                     .ifPresent(cap -> {
                         cap.addFoodEntry(item, player);
                         cap.tickEffects(player, player.level());
-                        ModPacketHandler.sendToPlayer(new ActiveFoodsS2CPacket(cap.foods), (ServerPlayer) player);
+                        if (!event.getEntity().level().isClientSide())
+                            ModPacketHandler.sendToPlayer(new ActiveFoodsS2CPacket(cap.foods), (ServerPlayer) player);
                     });
 
         }
@@ -185,7 +188,7 @@ public class PlayerActiveFoods {
 
     public void copyFrom(PlayerActiveFoods other){
         this.slotCount = other.slotCount;
-        this.foods = List.copyOf(other.foods);
+        this.foods = new ArrayList<>(other.foods);
     }
 
     public void saveNBT(CompoundTag tag){

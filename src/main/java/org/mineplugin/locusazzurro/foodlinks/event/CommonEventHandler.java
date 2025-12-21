@@ -1,6 +1,7 @@
 package org.mineplugin.locusazzurro.foodlinks.event;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
@@ -19,6 +20,8 @@ import net.minecraftforge.fml.common.Mod;
 import org.mineplugin.locusazzurro.foodlinks.FoodLinks;
 import org.mineplugin.locusazzurro.foodlinks.food.PlayerActiveFoods;
 import org.mineplugin.locusazzurro.foodlinks.capability.PlayerActiveFoodsProvider;
+import org.mineplugin.locusazzurro.foodlinks.network.ActiveFoodsS2CPacket;
+import org.mineplugin.locusazzurro.foodlinks.network.ModPacketHandler;
 
 
 @Mod.EventBusSubscriber(modid = FoodLinks.MODID)
@@ -27,31 +30,33 @@ public class CommonEventHandler {
     public static final ResourceLocation ACTIVE_FOODS_RL = new ResourceLocation(FoodLinks.MODID, "active_foods");
 
     @SubscribeEvent
-    public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event){
-        if (event.getObject() instanceof Player player){
-            if (!player.getCapability(PlayerActiveFoodsProvider.PLAYER_ACTIVE_FOODS).isPresent()){
+    public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof Player player) {
+            if (!player.getCapability(PlayerActiveFoodsProvider.PLAYER_ACTIVE_FOODS).isPresent()) {
                 event.addCapability(ACTIVE_FOODS_RL, new PlayerActiveFoodsProvider());
             }
         }
     }
 
     @SubscribeEvent
-    public static void onPlayerCloned(PlayerEvent.Clone event){
-        if (event.isWasDeath()){
-            event.getOriginal().getCapability(PlayerActiveFoodsProvider.PLAYER_ACTIVE_FOODS).ifPresent(oldCap ->
-                    event.getEntity().getCapability(PlayerActiveFoodsProvider.PLAYER_ACTIVE_FOODS).ifPresent(newCap ->
-                            newCap.copyFrom(oldCap)));
-        }
+    public static void onPlayerCloned(PlayerEvent.Clone event) {
+        Player playerNew = event.getEntity();
+        Player playerOld = event.getOriginal();
+        playerOld.reviveCaps();
+        playerOld.getCapability(PlayerActiveFoodsProvider.PLAYER_ACTIVE_FOODS).ifPresent(oldCap ->
+                playerNew.getCapability(PlayerActiveFoodsProvider.PLAYER_ACTIVE_FOODS).ifPresent(newCap -> {
+                    newCap.copyFrom(oldCap);
+                    if (event.isWasDeath())
+                        newCap.clearFoodList();
+                    if (!playerNew.level().isClientSide())
+                        ModPacketHandler.sendToPlayer(new ActiveFoodsS2CPacket(newCap.getFoods()), (ServerPlayer) playerNew);
+                }));
+        playerOld.invalidateCaps();
     }
 
     @SubscribeEvent
-    public static void onRegisterCapabilities(RegisterCapabilitiesEvent event){
-        event.register(PlayerActiveFoods.class);
-    }
-
-    @SubscribeEvent
-    public static void powerHeal(LivingHealEvent event){
-        if (event.getEntity() instanceof Player pPlayer){
+    public static void powerHeal(LivingHealEvent event) {
+        if (event.getEntity() instanceof Player pPlayer) {
             boolean naturalRegen = pPlayer.level().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION);
             if (!naturalRegen) return;
             float maxHealth = pPlayer.getMaxHealth();
@@ -77,10 +82,10 @@ public class CommonEventHandler {
     }
 
     @SubscribeEvent
-    public static void disableBrewing(PotionBrewEvent.Pre event){
-        for (int i = 0; i < 3; i ++){
+    public static void disableBrewing(PotionBrewEvent.Pre event) {
+        for (int i = 0; i < 3; i++) {
             ItemStack item = event.getItem(i);
-            if (item.is(Items.POTION) || item.is(Items.SPLASH_POTION) || item.is(Items.LINGERING_POTION)){
+            if (item.is(Items.POTION) || item.is(Items.SPLASH_POTION) || item.is(Items.LINGERING_POTION)) {
                 PotionUtils.setPotion(item, Potions.MUNDANE);
                 event.setCanceled(true);
             }
