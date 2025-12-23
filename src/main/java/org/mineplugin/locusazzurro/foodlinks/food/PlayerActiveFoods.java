@@ -38,12 +38,11 @@ public class PlayerActiveFoods {
     private long lastEffectTick = 0;
     public static final int MIN_COUNT = 3;
     public static final int MAX_COUNT = 5;
-    public static final int MAX_EFFECT_COUNT = 9;
 
     public PlayerActiveFoods(){
         slotCount = MIN_COUNT;
         foods = new ArrayList<>(MAX_COUNT);
-        activeEffects = new HashSet<>(MAX_EFFECT_COUNT);
+        activeEffects = new HashSet<>();
     }
 
     public int getSlotCount(){
@@ -60,6 +59,7 @@ public class PlayerActiveFoods {
 
     @SuppressWarnings("ConstantConditions")
     public void addFoodEntry(ItemStack item, Player player){
+        if (item.is(EffectorTags.EFFECTOR_SKIP)) return;
         Item addItem = item.getItem();
         int chargeValue = addItem.getFoodProperties(item, player).getNutrition() * 3;
         for (ActiveFoodEntry entry : this.foods){
